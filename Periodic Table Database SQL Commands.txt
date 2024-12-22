@@ -1,0 +1,101 @@
+------------------------------------------------------------
+1. Connect the periodic_table database
+------------------------------------------------------------
+psql --username=freecodecamp --dbname=periodic_table;
+
+\c periodic_table;
+
+------------------------------------------------------------
+2. Fix the database
+------------------------------------------------------------
+ALTER TABLE properties RENAME COLUMN weight to atomic_mass;
+ALTER TABLE properties RENAME COLUMN melting_point to melting_point_celsius;
+ALTER TABLE properties RENAME COLUMN boiling_point to boiling_point_celsius;
+
+ALTER TABLE properties ALTER COLUMN melting_point_celsius SET NOT NULL;
+ALTER TABLE properties ALTER COLUMN boiling_point_celsius SET NOT NULL;
+
+ALTER TABLE elements ADD UNIQUE(symbol);
+ALTER TABLE elements ADD UNIQUE(name);
+
+ALTER TABLE elements ALTER COLUMN symbol SET NOT NULL;
+ALTER TABLE elements ALTER COLUMN name SET NOT NULL;
+
+ALTER TABLE properties ADD FOREIGN KEY (atomic_number) REFERENCES elements (atomic_number);
+
+UPDATE elements SET symbol = 'He' WHERE symbol = 'he';
+UPDATE elements SET symbol = 'Li' WHERE symbol = 'li';
+UPDATE elements SET symbol = 'Mt' WHERE symbol = 'mT';
+UPDATE elements SET name = 'Motanium' WHERE name = 'moTanium';
+
+DELETE FROM properties WHERE atomic_number=1000;
+DELETE FROM elements WHERE atomic_number=1000;
+
+ALTER TABLE properties ALTER COLUMN atomic_mass TYPE DECIMAL;
+UPDATE properties SET atomic_mass=trim(trailing '00' FROM atomic_mass::TEXT)::DECIMAL;
+
+------------------------------------------------------------
+3. Create tables as required conditions
+------------------------------------------------------------
+CREATE TABLE types (
+	type_id INT NOT NULL,
+	type VARCHAR(40) NOT NULL
+);
+
+INSERT INTO types(type_id, type) VALUES(1, 'metal');
+INSERT INTO types(type_id, type) VALUES(2, 'nonmetal');
+INSERT INTO types(type_id, type) VALUES(3, 'metalloid');
+
+------------------------------------------------------------
+4. Primary Key and Foreign Key assignment
+------------------------------------------------------------
+ALTER TABLE types ADD PRIMARY KEY (type_id);
+
+------------------------------------------------------------
+5. Add the type_id column to the properties table
+------------------------------------------------------------
+ALTER TABLE properties RENAME COLUMN type TO type_id;
+
+ALTER TABLE properties ADD COLUMN temp_type INT NULL;
+
+UPDATE properties SET temp_type = 1 WHERE type_id = 'metal';
+UPDATE properties SET temp_type = 2 WHERE type_id = 'nonmetal';
+UPDATE properties SET temp_type = 3 WHERE type_id = 'metalloid';
+
+ALTER TABLE properties DROP COLUMN type_id;
+
+ALTER TABLE properties RENAME COLUMN temp_type to type_id;
+
+ALTER TABLE properties ADD FOREIGN KEY (type_id) REFERENCES types (type_id);
+
+ALTER TABLE properties ALTER COLUMN type_id SET NOT NULL;
+
+------------------------------------------------------------
+6. Add new elements to the elements and properties table
+------------------------------------------------------------
+INSERT INTO elements(atomic_number, symbol, name) VALUES(9, 'F', 'Fluorine');
+INSERT INTO elements(atomic_number, symbol, name) VALUES(10, 'Ne', 'Neon');
+
+INSERT INTO properties(atomic_number, atomic_mass, melting_point_celsius, boiling_point_celsius, type_id) VALUES(9, 18.998, -220, -188.1, 2);
+INSERT INTO properties(atomic_number, atomic_mass, melting_point_celsius, boiling_point_celsius, type_id) VALUES(10, 20.18, -248.6, -246.1, 2);
+
+----------------------------------------------------------------------------
+7. Prepare a git directory
+----------------------------------------------------------------------------
+mkdir periodic_table
+cd periodic_table
+git init
+git checkout -b main
+git commit -m "Initial commit"
+
+----------------------------------------------------------------------------
+8. Create files for the git repository
+----------------------------------------------------------------------------
+touch element.sh
+chmod +x element.sh
+
+
+
+
+
+
