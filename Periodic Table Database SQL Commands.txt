@@ -5,9 +5,9 @@ psql --username=freecodecamp --dbname=periodic_table;
 
 \c periodic_table;
 
-------------------------------------------------------------
+----------------------------------------------------------------------------
 2. Fix the database
-------------------------------------------------------------
+----------------------------------------------------------------------------
 ALTER TABLE properties RENAME COLUMN weight to atomic_mass;
 ALTER TABLE properties RENAME COLUMN melting_point to melting_point_celsius;
 ALTER TABLE properties RENAME COLUMN boiling_point to boiling_point_celsius;
@@ -34,9 +34,9 @@ DELETE FROM elements WHERE atomic_number=1000;
 ALTER TABLE properties ALTER COLUMN atomic_mass TYPE DECIMAL;
 UPDATE properties SET atomic_mass=trim(trailing '00' FROM atomic_mass::TEXT)::DECIMAL;
 
-------------------------------------------------------------
+----------------------------------------------------------------------------
 3. Create tables as required conditions
-------------------------------------------------------------
+----------------------------------------------------------------------------
 CREATE TABLE types (
 	type_id INT NOT NULL,
 	type VARCHAR(40) NOT NULL
@@ -46,14 +46,14 @@ INSERT INTO types(type_id, type) VALUES(1, 'metal');
 INSERT INTO types(type_id, type) VALUES(2, 'nonmetal');
 INSERT INTO types(type_id, type) VALUES(3, 'metalloid');
 
-------------------------------------------------------------
+----------------------------------------------------------------------------
 4. Primary Key and Foreign Key assignment
-------------------------------------------------------------
+----------------------------------------------------------------------------
 ALTER TABLE types ADD PRIMARY KEY (type_id);
 
-------------------------------------------------------------
+----------------------------------------------------------------------------
 5. Add the type_id column to the properties table
-------------------------------------------------------------
+----------------------------------------------------------------------------
 ALTER TABLE properties RENAME COLUMN type TO type_id;
 
 ALTER TABLE properties ADD COLUMN temp_type INT NULL;
@@ -70,9 +70,9 @@ ALTER TABLE properties ADD FOREIGN KEY (type_id) REFERENCES types (type_id);
 
 ALTER TABLE properties ALTER COLUMN type_id SET NOT NULL;
 
-------------------------------------------------------------
+----------------------------------------------------------------------------
 6. Add new elements to the elements and properties table
-------------------------------------------------------------
+----------------------------------------------------------------------------
 INSERT INTO elements(atomic_number, symbol, name) VALUES(9, 'F', 'Fluorine');
 INSERT INTO elements(atomic_number, symbol, name) VALUES(10, 'Ne', 'Neon');
 
